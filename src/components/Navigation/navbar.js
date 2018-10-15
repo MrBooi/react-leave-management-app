@@ -1,6 +1,6 @@
  import React from 'react';
 
-const navbar =({onRouteChange, isSignedIn})=>{
+const navbar =({onRouteChange, isSignedIn,first_name})=>{
    if(!isSignedIn){
     return (
         <div>
@@ -53,7 +53,7 @@ const navbar =({onRouteChange, isSignedIn})=>{
                 <li className="nav-item dropdown mr-3">
                 <a href="{}" className="nav-link dropdown-toggle"
                 data-toggle="dropdown">
-                   <i className="fa fa-user"></i> Welcome Ayabonga
+                   <i className="fa fa-user"></i> Welcome + ${first_name}
             </a>
                <div className="dropdown-menu">
                    <a href="{}" onClick={() => onRouteChange('')}  className="dropdown-item">

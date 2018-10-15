@@ -1,7 +1,46 @@
 import React from 'react';
 
-const login = ({onRouteChange})=>{
+class Login extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+         signInEmail:'',
+         signInPassword:''
+        }
+    }
+   
+    onEmailChange =(event)=>{
+      this.setState({signInEmail:event.target.value});
+    }
     
+    onPasswordChange =(event)=>{
+        this.setState({signInPassword:event.target.value});
+      }
+    
+     onSubmitSigIn = ()=>{
+        fetch('http://localhost:3000/api/signIn',{
+            method: 'Post',
+            headers:{'Content-Type':'application/json'},
+            body : JSON.stringify({
+                email:this.state.signInEmail,
+                password:this.state.signInPassword
+            }) 
+        })
+        .then(response => response.json())
+        .then(user =>{
+            if (user.data.success) {
+                this.props.loadUser(user.data);
+                this.props.onRouteChange('dashboard');
+             } 
+             else{
+                this.props.onRouteChange('home');
+            }
+        })
+     }
+
+
+
+    render (){
     return (
          <div className="container mt-5">
              <div className="row">
@@ -14,15 +53,24 @@ const login = ({onRouteChange})=>{
                             
                              <div className="form-group">
                               <label htmlFor="exampleInputEmail1">Email address</label>
-                              <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+                              <input type="email" className="form-control"
+                               id="exampleInputEmail1" aria-describedby="emailHelp" 
+                               placeholder="Enter email"
+                               onChange={this.onEmailChange} />
                                <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                                </div>
                             <div className="form-group">
                              <label htmlFor="exampleInputPassword1">Password</label>
-                             <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"/>
+                             <input type="password" 
+                             className="form-control"
+                              id="exampleInputPassword1"
+                               placeholder="Password"
+                                onChange={this.onPasswordChange}   
+                               />
                              </div>
                                 
-                             <button className='btn btn-primary btn-block' onClick={() =>onRouteChange('dashboard')}>Login</button>
+                             <button className='btn btn-primary btn-block'
+                              onClick={this.onSubmitSigIn}>Login</button>
                          </div>
                      </div>
                     </div>
@@ -31,5 +79,6 @@ const login = ({onRouteChange})=>{
      
     )
 }
+}
 
-export default login;
+export default Login;
