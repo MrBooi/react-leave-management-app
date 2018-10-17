@@ -14,13 +14,14 @@ const initialState ={
   route :'home',
   isSignedIn: false,
   user:{
-    id: '',
+    id: 0,
     first_name:'',
     last_name:'',
     position :'',
     email:''
-
   }
+  ,
+    appliedLeaves:[]
 }
 
 class App extends Component {
@@ -30,13 +31,15 @@ class App extends Component {
   } 
 
   loadUser =(user)=>{
+     let userData = user.data[0];
     this.setState({user:{
-      id: user.id,
-      first_name:user.first_name,
-    last_name:user.last_name,
-    position :user.position,
-    email:user.email
+    id: userData.id,
+    first_name:userData.first_name,
+    last_name:userData.last_name,
+    position :userData.position,
+    email:userData.email
     }})
+    this.onUserLeaves()
   }
 
   onRouteChange = (route) => {
@@ -48,9 +51,26 @@ class App extends Component {
     }
     this.setState({route:route});
   }
+  
+  onUserLeaves =()=> {
+    let userId =Number(this.state.user.id);
+    fetch('http://localhost:3000/api/user/applied/leaves/'+userId,{
+      method: 'GET',
+      headers:{'Content-Type':'application/json'}
+  })
+      .then(response => response.json())
+      .then(user =>{
+          console.log(user)
+          this.setState({appliedLeaves:user.data})
+  })
+  }
+ 
+
 
   render() {
-    const {route,isSignedIn,first_name} = this.state;
+    const {route,isSignedIn,first_name,user,appliedLeaves} = this.state;
+     
+  console.log(this.state);
     return (
       <div>  
       <Navbar onRouteChange={this.onRouteChange} isSignedIn={isSignedIn} 
@@ -66,10 +86,13 @@ class App extends Component {
         <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
         </div>
         : (route ==='dashboard')
+           
+         ?  <div>
+           <Dashboard appliedLeaves={appliedLeaves}/>
+           </div>
          
-        ?  <Dashboard />
         : (route === 'applyForLeave') 
-        ? <RequestLeave />
+        ? <RequestLeave onRouteChange={this.onRouteChange} userId={user.id} />
         : <Login loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
          )
        }
@@ -77,8 +100,8 @@ class App extends Component {
        <Footer />
        </div>
    
-     
     )
+
   }
 }
 

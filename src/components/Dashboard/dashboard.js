@@ -2,7 +2,8 @@ import React from 'react';
 import Header from '../Dashboard_header/dashboard-header'
 import Leavecard from '../Leave-Card/leave_card'; 
 
-const dashboard =()=>{
+const dashboard =({appliedLeaves})=>{
+  
     return (
         <div><Header />
              <Leavecard />
@@ -25,26 +26,19 @@ const dashboard =()=>{
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Ayabonga Booi</td>
-                                <td>Sick leave</td>
-                                <td>2018/10/09</td>
-                                <td>Pending</td>
-                                <td><a href="{}" className="btn btn-secondary">
-                                    <i className="fa fa-angle-double-right"></i> View
-                                </a></td>
-                            </tr>
-                            <tr>
-                                  <td>2</td>
-                                  <td>Ayabonga Booi</td>
-                                  <td>Unpaid</td>
-                                  <td>2018/10/16</td>
-                                  <td>Rejected</td>
-                                  <td><a href="{}" className="btn btn-secondary">
-                                      <i className="fa fa-angle-double-right"></i> View
-                                  </a></td>
-                              </tr>
+                       { appliedLeaves.map((current,i) => {
+               return      <tr key={i}>
+                             <td>{i+1}</td>
+                              <td>{current.first_name}</td>
+                             <td>{current.leave_type}</td>
+                             <td>2018/10/09</td>
+                             <td>{current.leave_status}</td>
+                             <td><a href="{}" className="btn btn-secondary">
+                            <i className="fa fa-angle-double-right"></i> View
+                            </a></td>
+                             </tr>         
+                        })
+                        }
                         </tbody>
 
                     </table>
