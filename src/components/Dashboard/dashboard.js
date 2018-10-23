@@ -2,8 +2,15 @@ import React from 'react';
 import Header from '../Dashboard_header/dashboard-header'
 import Leavecard from '../Leave-Card/leave_card'; 
 
-const dashboard =({appliedLeaves})=>{
-  
+class Dashboard  extends React.Component{
+
+   onViewChange =()=>{ 
+    console.log('viewLeave');
+    this.props.onRouteChange('viewLeave');
+   }
+
+   render(){ 
+       const {appliedLeaves} = this.props;
     return (
         <div><Header />
              <Leavecard />
@@ -33,9 +40,12 @@ const dashboard =({appliedLeaves})=>{
                              <td>{current.leave_type}</td>
                              <td>2018/10/09</td>
                              <td>{current.leave_status}</td>
-                             <td><a href="{}" className="btn btn-secondary">
-                            <i className="fa fa-angle-double-right"></i> View
-                            </a></td>
+                             <td><button  className="btn btn-secondary" 
+                               onClick={this.onViewChange}>
+                            <i className="fa fa-angle-double-right"
+                            
+                            ></i> View
+                            </button></td>
                              </tr>         
                         })
                         }
@@ -49,7 +59,7 @@ const dashboard =({appliedLeaves})=>{
     </div>
 
     )
-
+}
 }
 
-export default dashboard;
+export default Dashboard;

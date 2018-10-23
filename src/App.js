@@ -5,6 +5,7 @@ import Footer from  './components/Footer/footer';
 import Register from './components/Register/register';
 import Dashboard from './components/Dashboard/dashboard';
 import RequestLeave from './components/Request_leave/request_leave';
+import LeaveStatus from  './components/Leave_status/leave-status';
 
 import './App.css';
 
@@ -88,13 +89,16 @@ class App extends Component {
         : (route ==='dashboard')
            
          ?  <div>
-           <Dashboard appliedLeaves={appliedLeaves}/>
+           <Dashboard appliedLeaves={appliedLeaves} onRouteChange={this.onRouteChange} />
            </div>
          
         : (route === 'applyForLeave') 
         ? <RequestLeave onRouteChange={this.onRouteChange} userId={user.id} />
-        : <Login loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+        :  (route === 'viewLeave')
+         ?    <LeaveStatus />
+         :    <LeaveStatus />
          )
+  
        }
       
        <Footer />
