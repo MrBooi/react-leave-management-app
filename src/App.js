@@ -6,6 +6,7 @@ import Register from './components/Register/register';
 import Dashboard from './components/Dashboard/dashboard';
 import RequestLeave from './components/Request_leave/request_leave';
 import LeaveStatus from  './components/Leave_status/leave-status';
+import BackButton  from  './components/BackButton/backbutton';
 
 import './App.css';
 
@@ -31,8 +32,48 @@ class App extends Component {
      this.state =initialState
   } 
 
+
+  componentDidMount(){
+    const token = window.sessionStorage.getItem('token'); 
+    
+     if(token){
+      fetch('http://localhost:3000/api/signin',{
+        method: 'post',
+        headers:{
+          'Content-Type': 'application/json',
+          Authorization:token
+        }
+      }) 
+      .then(resp=>resp.json())
+      .then(data=>{ 
+           console.log("data",data)
+        if (data && data.id) {
+          fetch(`http://localhost:3000/api/profile/${data.id}`, {
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization:token
+            }
+        })
+        .then(resp=>resp.json())
+      .then(user=>{ 
+         console.log(user.data.id)
+          if (user && user.data.id) {
+            this.loadUser(user.data)
+            this.onRouteChange('dashboard');
+          }
+      })
+    }
+      })
+      .catch(console.log)
+     }
+  
+    }
+
   loadUser =(user)=>{
-     let userData = user.data[0];
+     let userData = user;
+     console.log(userData);
+     
     this.setState({user:{
     id: userData.id,
     first_name:userData.first_name,
@@ -40,7 +81,7 @@ class App extends Component {
     position :userData.position,
     email:userData.email
     }})
-    this.onUserLeaves()
+      this.onUserLeaves()
   }
 
   onRouteChange = (route) => {
@@ -54,10 +95,12 @@ class App extends Component {
   }
   
   onUserLeaves =()=> {
-    let userId =Number(this.state.user.id);
+     let userId =this.state.user.id; 
+     console.log(userId)
     fetch('http://localhost:3000/api/user/applied/leaves/'+userId,{
       method: 'GET',
-      headers:{'Content-Type':'application/json'}
+      headers:{'Content-Type':'application/json',
+      Authorization:window.sessionStorage.getItem('token')}
   })
       .then(response => response.json())
       .then(user =>{
@@ -93,9 +136,17 @@ class App extends Component {
            </div>
          
         : (route === 'applyForLeave') 
-        ? <RequestLeave onRouteChange={this.onRouteChange} userId={user.id} />
-        :  (route === 'viewLeave')
-         ?    <LeaveStatus />
+        
+        ? <div>
+        <BackButton />
+        <RequestLeave onRouteChange={this.onRouteChange} userId={user.id} onUserLeaves={this.onUserLeaves} />
+        </div>
+        :  (route === 'viewLeave') 
+            
+         ?  <div>
+         <BackButton /> 
+           <LeaveStatus />
+         </div>
          :    <LeaveStatus />
          )
   

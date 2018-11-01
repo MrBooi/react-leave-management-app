@@ -21,17 +21,21 @@ class Login extends React.Component{
      onSubmitSigIn = ()=>{
         fetch('http://localhost:3000/api/signIn',{
             method: 'Post',
-            headers:{'Content-Type':'application/json'},
+            headers:{'Content-Type':'application/json',
+         },
             body : JSON.stringify({
                 email:this.state.signInEmail,
                 password:this.state.signInPassword
             }) 
         })
         .then(response => response.json())
-        .then(user =>{
-            if (user.data.success) {
-                this.props.loadUser(user.data);
+        .then(user =>{ 
+            if (user.success) {
+                window.sessionStorage.setItem('token',user.userId); 
+                
+                this.props.loadUser([{id:488}])
                 this.props.onRouteChange('dashboard');
+                //  this.props.onUserLeave(488);
              } 
              else{
                 this.props.onRouteChange('home');

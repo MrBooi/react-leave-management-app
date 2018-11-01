@@ -11,6 +11,9 @@ class RequestLeave extends React.Component{
       endDate: ''
     }
   }
+
+ 
+
   onLeaveTypeChange=(event)=>{
     this.setState({leaveType:event.target.value});
   }
@@ -31,7 +34,9 @@ class RequestLeave extends React.Component{
    console.log(this.props.userId)
     fetch('http://localhost:3000/api/request/leave',{
       method: 'Post',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json',
+      Authorization: window.sessionStorage.getItem('token')
+     },
       body : JSON.stringify({
           user_id      : this.props.userId,
           leaveType    : this.state.leaveType,
@@ -54,7 +59,7 @@ class RequestLeave extends React.Component{
   }
 render(){
 return (
-    <div className='container mt-5'>
+    <div className='container mt-1'>
      <div className="row">
       <div className="col-md-6 mx-auto">
        <div className="card">
