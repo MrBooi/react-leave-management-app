@@ -11,9 +11,7 @@ class RequestLeave extends React.Component{
       endDate: ''
     }
   }
-
- 
-
+  
   onLeaveTypeChange=(event)=>{
     this.setState({leaveType:event.target.value});
   }
@@ -47,10 +45,11 @@ class RequestLeave extends React.Component{
   })
       .then(response => response.json())
       .then(user =>{
-               console.log(user);
+               
               if (user.success) {
-                  this.props.loadUser(user.data);
-                  this.props.onRouteChange('dashboard');
+                this.props.onUserLeaves();
+                // this.props.loadUser(user.data);  
+                this.props.onRouteChange('dashboard');
           }
            else{
               this.props.onRouteChange('dashboard');
@@ -58,6 +57,7 @@ class RequestLeave extends React.Component{
   })
   }
 render(){
+ 
 return (
     <div className='container mt-1'>
      <div className="row">

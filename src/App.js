@@ -23,17 +23,28 @@ const initialState ={
     email:''
   }
   ,
-    appliedLeaves:[]
+    appliedLeaves:[],
+    info:{
+      leave_id :0,
+      fullname: '',
+      status :'',
+      comment:'',
+      requestdate:'',
+      from:'',
+      to:''}
 }
+
 
 class App extends Component {
   constructor (props){
     super(props);
+  
      this.state =initialState
   } 
 
 
   componentDidMount(){
+   
     const token = window.sessionStorage.getItem('token'); 
     
      if(token){
@@ -46,7 +57,7 @@ class App extends Component {
       }) 
       .then(resp=>resp.json())
       .then(data=>{ 
-           console.log("data",data)
+        
         if (data && data.id) {
           fetch(`http://localhost:3000/api/profile/${data.id}`, {
             method: 'get',
@@ -57,7 +68,6 @@ class App extends Component {
         })
         .then(resp=>resp.json())
       .then(user=>{ 
-         console.log(user.data.id)
           if (user && user.data.id) {
             this.loadUser(user.data)
             this.onRouteChange('dashboard');
@@ -70,9 +80,19 @@ class App extends Component {
   
     }
 
+    onViewChange =(data)=>{ 
+      console.log(data)
+   this.setState({info:{leave_id:data.id,fullname:data.first_name + data.last_name,
+       status:data.leave_status,comment:data.leave_description
+    }})
+  
+   this.onRouteChange('viewLeave');
+  } 
+
+
   loadUser =(user)=>{
      let userData = user;
-     console.log(userData);
+     
      
     this.setState({user:{
     id: userData.id,
@@ -96,7 +116,6 @@ class App extends Component {
   
   onUserLeaves =()=> {
      let userId =this.state.user.id; 
-     console.log(userId)
     fetch('http://localhost:3000/api/user/applied/leaves/'+userId,{
       method: 'GET',
       headers:{'Content-Type':'application/json',
@@ -104,7 +123,7 @@ class App extends Component {
   })
       .then(response => response.json())
       .then(user =>{
-          console.log(user)
+         
           this.setState({appliedLeaves:user.data})
   })
   }
@@ -112,13 +131,13 @@ class App extends Component {
 
 
   render() {
-    const {route,isSignedIn,first_name,user,appliedLeaves} = this.state;
+    const {route,isSignedIn,first_name,user,appliedLeaves,info} = this.state;
      
   console.log(this.state);
     return (
       <div>  
       <Navbar onRouteChange={this.onRouteChange} isSignedIn={isSignedIn} 
-      first_name={first_name}/>
+      first_name={first_name} />
        {route === 'home' 
        ?
        <div>
@@ -132,7 +151,9 @@ class App extends Component {
         : (route ==='dashboard')
            
          ?  <div>
-           <Dashboard appliedLeaves={appliedLeaves} onRouteChange={this.onRouteChange} />
+           <Dashboard appliedLeaves={appliedLeaves} 
+           onRouteChange={this.onRouteChange} onUserLeaves={this.onUserLeaves} 
+           onViewChange={this.onViewChange} />
            </div>
          
         : (route === 'applyForLeave') 
@@ -145,9 +166,9 @@ class App extends Component {
             
          ?  <div>
          <BackButton /> 
-           <LeaveStatus />
+           <LeaveStatus info={info}/>
          </div>
-         :    <LeaveStatus />
+         :      <LeaveStatus info={info}/>
          )
   
        }

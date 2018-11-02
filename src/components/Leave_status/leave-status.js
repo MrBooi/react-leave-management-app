@@ -1,6 +1,24 @@
 import React from 'react';
 
-const Leave_Status =()=>{
+const Leave_Status =({info})=>{
+ const {leave_id,fullname,status,comment}=info;
+
+const onChangeStatus=(id,status)=>{ 
+
+  fetch(`http://localhost:3000/api/update/leave/status/${id}/${status}`,{
+    method: 'Post',
+    headers:{'Content-Type':'application/json',
+    Authorization:window.sessionStorage.getItem('token')}
+})
+    .then(response => response.json())
+    .then(user =>{
+        console.log(user)
+        // this.setState({appliedLeaves:user.data})
+})
+}
+
+
+
 
 return(
   <div className="container mt-5">
@@ -12,7 +30,8 @@ return(
         </div>
           <div className="card-body">
             <div className="mb-3">
-              <h5 className="text-center text-warning">Pending</h5>
+            <h5 className="text-center text-primary">{fullname}</h5>
+              <h5 className="text-center text-warning">{status}</h5>
               <h6 className="text-center">Requested on Friday 18 October 2018</h6>
             </div>
             <div className="form-group">
@@ -26,17 +45,19 @@ return(
 
             <div className="form-group">
             <label htmlFor="start_date">Employee Comment</label>
-            <p className="mx-5">Planning overseas holiday pending leave approval</p>
+            <p className="mx-5">{comment}</p>
             </div>
 
              <div className="mb-3">
              <button className="btn btn-success btn-inline-block" 
-            >Approve Leave</button>
+              onClick={()=>onChangeStatus(leave_id,'Approved')}  >Approve Leave</button>
              <button className="btn btn-danger btn-inline-block float-right m" 
-            >Decline Leave</button>
+               onClick={()=>onChangeStatus(leave_id,'Rejected')}   >Decline Leave</button>
              </div>
            
-            <button className="btn btn-defualt btn-inline-block float-right">Cancel</button>
+            <button className="btn btn-defualt btn-inline-block float-right"
+             onClick={()=>onChangeStatus(leave_id,'Canceled')}
+            >Cancel</button>
        </div>
       </div>
      </div>

@@ -4,13 +4,21 @@ import Leavecard from '../Leave-Card/leave_card';
 
 class Dashboard  extends React.Component{
 
-   onViewChange =()=>{ 
-    console.log('viewLeave');
-    this.props.onRouteChange('viewLeave');
-   }
+ 
 
+  componentDidMount(){
+    this.props.onUserLeaves();
+  }
+ 
+ 
+
+
+  
+
+   
    render(){ 
-       const {appliedLeaves} = this.props;
+       const {appliedLeaves ,onViewChange} = this.props;
+       
     return (
         <div><Header />
              <Leavecard />
@@ -41,13 +49,14 @@ class Dashboard  extends React.Component{
                              <td>2018/10/09</td>
                              <td>{current.leave_status}</td>
                              <td><button  className="btn btn-secondary" 
-                               onClick={this.onViewChange}>
+                               onClick={()=>onViewChange(current)}>
                             <i className="fa fa-angle-double-right"
                             
                             ></i> View
                             </button></td>
                              </tr>         
                         })
+                       
                         }
                         </tbody>
 
@@ -55,7 +64,9 @@ class Dashboard  extends React.Component{
                 </div>
             </div>
         </div>
+        
     </div>
+    
     </div>
 
     )

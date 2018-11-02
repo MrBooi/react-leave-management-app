@@ -30,10 +30,11 @@ class Login extends React.Component{
         })
         .then(response => response.json())
         .then(user =>{ 
+        
             if (user.success) {
-                window.sessionStorage.setItem('token',user.userId); 
-                
-                this.props.loadUser([{id:488}])
+                window.sessionStorage.setItem('token',user.token); 
+               
+                this.props.loadUser(user.data)
                 this.props.onRouteChange('dashboard');
                 //  this.props.onUserLeave(488);
              } 
