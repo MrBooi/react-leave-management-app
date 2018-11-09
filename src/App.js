@@ -82,7 +82,7 @@ class App extends Component {
 
     onViewChange =(data)=>{ 
       console.log(data)
-   this.setState({info:{leave_id:data.id,fullname:data.first_name + data.last_name,
+   this.setState({info:{leave_id:data.id,fullname:data.first_name + " " + data.last_name,
        status:data.leave_status,comment:data.leave_description
     }})
   
@@ -114,30 +114,45 @@ class App extends Component {
     this.setState({route:route});
   }
   
-  onUserLeaves =()=> {
+  onUserLeaves = ()=> {
      let userId =this.state.user.id; 
-    fetch('http://localhost:3000/api/user/applied/leaves/'+userId,{
-      method: 'GET',
-      headers:{'Content-Type':'application/json',
-      Authorization:window.sessionStorage.getItem('token')}
-  })
-      .then(response => response.json())
-      .then(user =>{
-         
-          this.setState({appliedLeaves:user.data})
-  })
+     let position = this.state.user.position;
+     if (position !=="Manager") {
+      fetch('http://localhost:3000/api/user/applied/leaves/'+userId,{
+        method: 'GET',
+        headers:{'Content-Type':'application/json',
+        Authorization:window.sessionStorage.getItem('token')}
+    })
+        .then(response => response.json())
+        .then(user =>{
+           
+            this.setState({appliedLeaves:user.data})
+    })
+     } else{
+      fetch('http://localhost:3000/api/users/applied/history',{
+        method: 'GET',
+        headers:{'Content-Type':'application/json',
+        Authorization:window.sessionStorage.getItem('token')}
+    })
+        .then(response => response.json())
+        .then(user =>{
+          
+            this.setState({appliedLeaves:user.data})
+    })
+     }
+   
   }
  
 
 
   render() {
-    const {route,isSignedIn,first_name,user,appliedLeaves,info} = this.state;
+    const {route,isSignedIn,user,appliedLeaves,info} = this.state;
      
   console.log(this.state);
     return (
       <div>  
       <Navbar onRouteChange={this.onRouteChange} isSignedIn={isSignedIn} 
-      first_name={first_name} />
+      first_name={user.first_name} />
        {route === 'home' 
        ?
        <div>
@@ -153,7 +168,7 @@ class App extends Component {
          ?  <div>
            <Dashboard appliedLeaves={appliedLeaves} 
            onRouteChange={this.onRouteChange} onUserLeaves={this.onUserLeaves} 
-           onViewChange={this.onViewChange} />
+           onViewChange={this.onViewChange} position={user.position} userId={user.id}  />
            </div>
          
         : (route === 'applyForLeave') 
@@ -166,9 +181,9 @@ class App extends Component {
             
          ?  <div>
          <BackButton /> 
-           <LeaveStatus info={info}/>
+           <LeaveStatus info={info} position={user.position}/>
          </div>
-         :      <LeaveStatus info={info}/>
+         :     <Login loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
          )
   
        }

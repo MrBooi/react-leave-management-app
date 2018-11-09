@@ -9,19 +9,32 @@ class Dashboard  extends React.Component{
   componentDidMount(){
     this.props.onUserLeaves();
   }
- 
- 
-
-
   
+  onColorChange =(color)=>{
+    switch (color) {
+        case 'Approved':
+            return 'text-success'
+         case 'Rejected':
+         return 'text-danger'
+         case 'Pending':
+         return 'text-warning'
+        default:
+        return 'text-danger'           
+    }
+  }
 
-   
+ 
    render(){ 
-       const {appliedLeaves ,onViewChange} = this.props;
-       
+       const {appliedLeaves ,onViewChange ,position, userId} = this.props;
     return (
         <div><Header />
-             <Leavecard />
+          {position !=="Manager"
+           ?
+           <Leavecard id={userId}/>
+           :
+           <div></div>
+          }
+           
         <div className="container mt-4">
         <div className="row">
             <div className="col">
@@ -42,12 +55,13 @@ class Dashboard  extends React.Component{
                         </thead>
                         <tbody>
                        { appliedLeaves.map((current,i) => {
+                     
                return      <tr key={i}>
                              <td>{i+1}</td>
-                              <td>{current.first_name}</td>
+                              <td>{current.first_name} {current.last_name}</td>
                              <td>{current.leave_type}</td>
                              <td>2018/10/09</td>
-                             <td>{current.leave_status}</td>
+                             <td className={this.onColorChange(current.leave_status)}>{current.leave_status}</td>
                              <td><button  className="btn btn-secondary" 
                                onClick={()=>onViewChange(current)}>
                             <i className="fa fa-angle-double-right"

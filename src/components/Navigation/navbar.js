@@ -1,6 +1,28 @@
  import React from 'react';
+ import { Link } from "react-router-dom";
 
-const navbar =({onRouteChange, isSignedIn,first_name})=>{
+const navbar =({onRouteChange, isSignedIn,first_name})=>{ 
+
+   
+const signOut = () => {
+
+    fetch(`http://localhost:3000/api/user/signOut`,{
+    method: 'Get',
+    headers:{'Content-Type':'application/json',
+    Authorization:window.sessionStorage.getItem('token')}
+})
+    .then(response => response.json())
+    .then(user =>{ 
+       if (user.success) {
+         window.sessionStorage.removeItem('token');
+         onRouteChange('SignOut');
+       }
+})
+}
+
+
+
+
    if(!isSignedIn){
     return (
         <div>
@@ -15,12 +37,12 @@ const navbar =({onRouteChange, isSignedIn,first_name})=>{
         <ul className="navbar-nav ml-auto">
  
             <li className="nav-item">
-                <a href={'home'} onClick={() => onRouteChange('signIn')} className="nav-link">
+                <a  onClick={() => onRouteChange('signIn')} className="nav-link">
                     <i className="fa fa-user-circle"></i> Login
                 </a>
             </li>
             <li className="nav-item">
-                <a href= {'!#'} onClick={() => onRouteChange('register')}  className="nav-link" data-toggle="modal"
+                <a onClick={() => onRouteChange('register')}  className="nav-link" data-toggle="modal"
                  data-target="#register-modal">
                     <i className="fa fa-user-circle"></i> Register
                 </a>
@@ -53,7 +75,7 @@ const navbar =({onRouteChange, isSignedIn,first_name})=>{
                 <li className="nav-item dropdown mr-3">
                 <a href="{}" className="nav-link dropdown-toggle"
                 data-toggle="dropdown">
-                   <i className="fa fa-user"></i> Welcome + ${first_name}
+                   <i className="fa fa-user"></i> Welcome {first_name} 
             </a>
                <div className="dropdown-menu">
                    <a href="{}" onClick={() => onRouteChange('')}  className="dropdown-item">
@@ -65,7 +87,7 @@ const navbar =({onRouteChange, isSignedIn,first_name})=>{
                </div>
                 </li>
                 <li className="nav-item">
-                    <a href="index.html" onClick={() => onRouteChange('SignOut')}  className="nav-link">
+                    <a href="{}" onClick={() => signOut()}  className="nav-link">
                         <i className="fa fa-user-times"></i> Logout
                     </a>
                 </li>
