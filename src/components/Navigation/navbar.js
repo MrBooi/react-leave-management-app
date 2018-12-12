@@ -1,5 +1,5 @@
  import React from 'react';
- import { Link } from "react-router-dom";
+
 
 const navbar =({onRouteChange, isSignedIn,first_name})=>{ 
 
@@ -28,7 +28,7 @@ const signOut = () => {
         <div>
        <nav className="navbar navbar-expand-sm navbar-dark bg-dark p-0">
      <div className="container">
-      <a href={'home'}  className="navbar-brand">MrBooi</a>
+      <a href={'home'}  className="navbar-brand">Leave Management System</a>
       <button className="navbar-toggler"
       data-toggle="collapse" data-target="#navbarHome">
         <span className="navbar-toggler-icon"></span>
@@ -58,7 +58,7 @@ const signOut = () => {
      return (
         <nav className="navbar navbar-expand-sm navbar-dark bg-dark p-0">
         <div className="container">
-            <a href="{}" className="navbar-brand">MrBooi</a>
+            <a href="{}" className="navbar-brand">Leave Management System</a>
             <button className="navbar-toggler" data-toggle="collapse"
              data-target="#navbarNav" >
              <span className="navbar-toggler-icon"></span>
